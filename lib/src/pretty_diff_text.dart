@@ -1,6 +1,7 @@
 import 'package:diff_match_patch/diff_match_patch.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_diff_text/src/diff_cleanup_type.dart';
+import 'package:flutter/gestures.dart';
 
 class PrettyDiffText extends StatelessWidget {
   /// The original text which is going to be compared with [newText].
@@ -48,6 +49,7 @@ class PrettyDiffText extends StatelessWidget {
   final StrutStyle? strutStyle;
   final TextWidthBasis textWidthBasis;
   final TextHeightBehavior? textHeightBehavior;
+  final Function(String)? onTap;
 
   const PrettyDiffText({
     Key? key,
@@ -74,6 +76,7 @@ class PrettyDiffText extends StatelessWidget {
     this.strutStyle,
     this.textWidthBasis = TextWidthBasis.parent,
     this.textHeightBehavior,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -87,10 +90,18 @@ class PrettyDiffText extends StatelessWidget {
 
     final textSpans = List<TextSpan>.empty(growable: true);
 
-    diffs.forEach((diff) {
+    for (int i = 0; i < diffs.length; i++) {
+      final diff = diffs[i];
+
       TextStyle? textStyle = getTextStyleByDiffOperation(diff);
-      textSpans.add(TextSpan(text: diff.text, style: textStyle));
-    });
+      textSpans.add(TextSpan(
+        text: diff.text,
+        style: textStyle,
+        recognizer: onTap != null
+            ? (TapGestureRecognizer()..onTap = () => onTap!(diff.tex))
+            : null,
+      ));
+    }
 
     return RichText(
       text: TextSpan(
