@@ -98,7 +98,7 @@ class PrettyDiffText extends StatelessWidget {
         text: diff.text,
         style: textStyle,
         recognizer: onTap != null
-            ? (TapGestureRecognizer()..onTap = () => onTap!(diff.tex))
+            ? (TapGestureRecognizer()..onTap = () => onTap!(diff.text))
             : null,
       ));
     }
